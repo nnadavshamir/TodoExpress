@@ -14,7 +14,9 @@ import { DeleteTodoQueryParams } from '../models/delete-todo-query-params';
 
 export const todoRouter = express.Router();
 
-todoRouter.get('/health', (_, res: Response) => wrapSuccessResponse(res, 'OK'));
+todoRouter.get('/health', (_, res: Response) => {
+  return res.status(200).send('OK');
+})
 
 todoRouter.get(
   '/size',
