@@ -21,7 +21,7 @@ todoRouter.get('/health', (_, res: Response) => {
 todoRouter.get(
   '/size',
   (req: Request<{}, {}, {}, TodoSizeQueryParams>, res: Response) => {
-    console.log(`get /todo/size: `, req.query);
+    // console.log(`get /todo/size: `, req.query);
     if (!getIsTodoStatusQueryParam(req.query.status)) {
       return res.sendStatus(400);
     }
@@ -36,7 +36,7 @@ todoRouter.get(
 );
 
 todoRouter.post('/', (req: Request<CreateTodoRequest>, res: Response) => {
-  console.log(`post /todo: `, req.body);
+  // console.log(`post /todo: `, req.body);
 
   if (req.body.dueDate < Date.now()) {
     return res.status(409).json({
@@ -88,7 +88,7 @@ todoRouter.put(
   (req: Request<{}, {}, {}, ChangeTodoStatusQueryParams>, res: Response) => {
     req.query.id = +req.query.id;
 
-    console.log(`put /todo: `, req.query);
+    // console.log(`put /todo: `, req.query);
     if (todoStatuses.every((todoStatus) => req.query.status !== todoStatus)) {
       return res.sendStatus(400);
     }
