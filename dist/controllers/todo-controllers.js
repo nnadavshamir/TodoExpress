@@ -12,7 +12,9 @@ const todos_manager_service_1 = require("../services/todos-manager.service");
 const string_utils_1 = require("../utils/string-utils");
 const array_utils_1 = require("../utils/array-utils");
 exports.todoRouter = express_1.default.Router();
-exports.todoRouter.get('/health', (_, res) => (0, response_wrapper_utils_1.wrapSuccessResponse)(res, 'OK'));
+exports.todoRouter.get('/health', (_, res) => {
+    return res.status(200).send('OK');
+});
 exports.todoRouter.get('/size', (req, res) => {
     console.log(`get /todo/size: `, req.query);
     if (!(0, todo_status_request_1.getIsTodoStatusQueryParam)(req.query.status)) {
