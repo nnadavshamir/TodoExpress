@@ -10,7 +10,7 @@ const transports = [
   }),
 ];
 
-const logger = winston.createLogger({
+export const requestsLogger = winston.createLogger({
   level: LoggerLevel.Info,
   format: defaultLoggerFormat,
   transports,
@@ -40,12 +40,14 @@ export const requestsLoggerMiddleware = (req: Request, res: Response, next) => {
   const start = process.hrtime();
   res.on('finish', () => {
     const durationInMs = process.hrtime(start)[1] / 1000000;
-    console.log('finish');
 
-    logger.info(
-      `request | #${serialRequestNumber} | resource: ${req.url} | HTTP Verb ${req.method} | request #${serialRequestNumber}`
+    requestsLogger.info(
+      `request | #${serialRequestNumber} | resource: ${req.baseUrl} | HTTP Verb ${req.method} | request #${serialRequestNumber}`
     );
-    logger.debug(`request #${serialRequestNumber} duration: ${durationInMs}ms`);
+  
+    requestsLogger.debug(
+      `request #${serialRequestNumber} duration: ${durationInMs}ms`
+    );
     serialRequestNumber += 1;
   });
 
