@@ -27,7 +27,6 @@ todoRouter.get(
   (req: Request<{}, {}, {}, TodoSizeQueryParams>, res: Response) => {
     if (!getIsTodoStatusQueryParam(req.query.status)) {
       return wrapFailResponse(res, 400);
-      res.sendStatus(400);
     }
 
     const result =
@@ -44,8 +43,7 @@ todoRouter.get(
 todoRouter.post('/', (req: Request<CreateTodoRequest>, res: Response) => {
   logger.info(`Creating new TODO with Title [${req.body.title}]`);
   logger.debug(
-    `Currently there are ${todosManager.getTodosLength()} Todos in the system.
-     New TODO will be assigned with id ${todosManager.getNextId()}`
+    `Currently there are ${todosManager.getTodosLength()} TODOs in the system. New TODO will be assigned with id ${todosManager.getNextId()}`
   );
 
   if (req.body.dueDate < Date.now()) {
@@ -77,7 +75,9 @@ todoRouter.get(
   '/content',
   (req: Request<{}, {}, {}, GetContentQueryParams>, res: Response) => {
     logger.info(
-      `Extracting todos content. Filter: ${req.query.status} | Sorting by: ${req.query.sortBy}`
+      `Extracting todos content. Filter: ${req.query.status} | Sorting by: ${
+        req.query.sortBy ?? 'ID'
+      }`
     );
 
     if (!getIsTodoStatusQueryParam(req.query.status)) {
@@ -95,6 +95,7 @@ todoRouter.get(
       req.query.status === 'ALL'
         ? todosManager.getAllTodos()
         : todosManager.getTodosByStatus(req.query.status);
+
     const sortField = snakeToCamel(req.query.sortBy ?? 'ID');
 
     logger.debug(

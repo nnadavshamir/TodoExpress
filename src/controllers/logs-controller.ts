@@ -33,7 +33,6 @@ logsRouter
   .get((req: Request<{}, {}, {}, GetLoggerLevelParams>, res: Response) => {
     const loggerNameParam = req.query['logger-name'];
 
-    console.log(req.query);
     return loggerTypes.includes(loggerNameParam)
       ? res.status(200).send(loggerTypeToLogger[loggerNameParam].level)
       : res.status(400).send(`logger-name cannot be ${loggerNameParam}`);
