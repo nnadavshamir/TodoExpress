@@ -34,7 +34,7 @@ export const requestsLogger = winston.createLogger({
 //   { stream }
 // );
 
-let serialRequestNumber = 1;
+export let serialRequestNumber = 1;
 
 export const requestsLoggerMiddleware = (req: Request, res: Response, next) => {
   const start = process.hrtime();
@@ -42,7 +42,7 @@ export const requestsLoggerMiddleware = (req: Request, res: Response, next) => {
     const durationInMs = process.hrtime(start)[1] / 1000000;
 
     requestsLogger.info(
-      `request | #${serialRequestNumber} | resource: ${req.baseUrl} | HTTP Verb ${req.method} | request #${serialRequestNumber}`
+      `Incoming request | #${serialRequestNumber} | resource: ${req.baseUrl} | HTTP Verb ${req.method}`
     );
   
     requestsLogger.debug(

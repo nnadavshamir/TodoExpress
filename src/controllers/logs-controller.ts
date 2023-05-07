@@ -3,18 +3,20 @@ import { Request, Response } from 'express';
 import winston from 'winston';
 import { requestsLogger } from '../logger/requests-logger';
 import { loggerLevels } from '../logger/logger-level';
+import { todosLogger } from '../logger/todos-logger';
 
 export const logsRouter = express.Router();
 
 enum LoggerType {
   Request = 'request-logger',
-  // Todo = 'todo-logger'
+  Todo = 'todo-logger',
 }
 
 const loggerTypes = Object.values(LoggerType);
 
 const loggerTypeToLogger: Record<LoggerType, winston.Logger> = {
   [LoggerType.Request]: requestsLogger,
+  [LoggerType.Todo]: todosLogger,
 };
 
 export interface GetLoggerLevelParams {

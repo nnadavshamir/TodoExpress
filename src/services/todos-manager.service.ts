@@ -48,6 +48,10 @@ class TodosManager {
   public getTodosByStatus(status: TodoStatus) {
     return deepCopy(this._todoList.filter((todo) => todo.status === status));
   }
+  
+  public getNextId() {
+    return this._nextAccumId;
+  }
 
   public isTitleExists(title: string) {
     return this._todoList.some((todo) => todo.title === title);
