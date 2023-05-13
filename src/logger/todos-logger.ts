@@ -5,6 +5,7 @@ import { defaultLoggerFormat } from '../utils/logger-utils';
 const transports = [
   new winston.transports.File({
     filename: 'logs/todos.log',
+    options: { flags: 'w' }
   }),
 ];
 

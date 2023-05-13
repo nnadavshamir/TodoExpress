@@ -6,6 +6,7 @@ const transports = [
   new winston.transports.Console(),
   new winston.transports.File({
     filename: 'logs/requests.log',
+    options: { flags: 'w' },
   }),
 ];
 
