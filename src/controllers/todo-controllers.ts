@@ -41,11 +41,6 @@ todoRouter.get(
 );
 
 todoRouter.post('/', (req: Request<CreateTodoRequest>, res: Response) => {
-  logger.info(`Creating new TODO with Title [${req.body.title}]`);
-  logger.debug(
-    `Currently there are ${todosManager.getTodosLength()} TODOs in the system. New TODO will be assigned with id ${todosManager.getNextId()}`
-  );
-
   if (req.body.dueDate < Date.now()) {
     return wrapFailResponse(
       res,
@@ -62,6 +57,11 @@ todoRouter.post('/', (req: Request<CreateTodoRequest>, res: Response) => {
     );
   }
 
+  logger.info(`Creating new TODO with Title [${req.body.title}]`);
+  logger.debug(
+    `Currently there are ${todosManager.getTodosLength()} TODOs in the system. New TODO will be assigned with id ${todosManager.getNextId()}`
+  );
+
   const todoId = todosManager.create(
     req.body.title,
     req.body.content,
@@ -74,12 +74,6 @@ todoRouter.post('/', (req: Request<CreateTodoRequest>, res: Response) => {
 todoRouter.get(
   '/content',
   (req: Request<{}, {}, {}, GetContentQueryParams>, res: Response) => {
-    logger.info(
-      `Extracting todos content. Filter: ${req.query.status} | Sorting by: ${
-        req.query.sortBy ?? 'ID'
-      }`
-    );
-
     if (!getIsTodoStatusQueryParam(req.query.status)) {
       return wrapFailResponse(res, 400);
     }
@@ -97,6 +91,12 @@ todoRouter.get(
         : todosManager.getTodosByStatus(req.query.status);
 
     const sortField = snakeToCamel(req.query.sortBy ?? 'ID');
+
+    logger.info(
+      `Extracting todos content. Filter: ${req.query.status} | Sorting by: ${
+        req.query.sortBy ?? 'ID'
+      }`
+    );
 
     logger.debug(
       `There are a total of ${todosManager.getTodosLength()} todos in the system. The result holds ${
@@ -143,16 +143,17 @@ todoRouter.delete(
   (req: Request<{}, {}, {}, DeleteTodoQueryParams>, res: Response) => {
     req.query.id = +req.query.id;
 
-    logger.info(`Removing todo id ${req.query.id}`);
-
     if (!todosManager.isIdExists(req.query.id)) {
-      return res.status(404).json({
-        errorMessage: `Error: no such TODO with id ${req.query.id}`,
-      });
+      return wrapFailResponse(
+        res,
+        404,
+        `Error: no such TODO with id ${req.query.id}`
+      );
     }
 
     todosManager.removeTodoById(req.query.id);
 
+    logger.info(`Removing todo id ${req.query.id}`);
     logger.debug(
       `After removing todo id [${
         req.query.id
