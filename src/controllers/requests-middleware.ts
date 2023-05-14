@@ -10,6 +10,7 @@ export const requestsLoggerMiddleware = (req: Request, res: Response, next) => {
   res.on('finish', () => {
     const durationInMs = process.hrtime(start)[1] / 1000000;
 
+    // Annoying hack to remove '/' from the end of the path
     const resourcePath = req.path === '/' ? '' : req.path;
 
     requestsLogger.info(
