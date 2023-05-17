@@ -4,20 +4,9 @@ import winston from 'winston';
 import { requestsLogger } from '../logger/requests-logger';
 import { loggerLevels } from '../logger/logger-level';
 import { todosLogger } from '../logger/todos-logger';
+import { LoggerType, loggerTypes } from '../logger/logger-type';
 
 export const logsRouter = express.Router();
-
-enum LoggerType {
-  Request = 'request-logger',
-  Todo = 'todo-logger',
-}
-
-const loggerTypes = Object.values(LoggerType);
-
-const loggerTypeToLogger: Record<LoggerType, winston.Logger> = {
-  [LoggerType.Request]: requestsLogger,
-  [LoggerType.Todo]: todosLogger,
-};
 
 export interface GetLoggerLevelParams {
   'logger-name': LoggerType;
@@ -33,9 +22,12 @@ logsRouter
   .get((req: Request<{}, {}, {}, GetLoggerLevelParams>, res: Response) => {
     const loggerNameParam = req.query['logger-name'];
 
-    return loggerTypes.includes(loggerNameParam)
-      ? res.status(200).send(loggerTypeToLogger[loggerNameParam].level)
-      : res.status(400).send(`logger-name cannot be ${loggerNameParam}`);
+    if (!loggerTypes.includes(loggerNameParam)) {
+      res.status(400).send(`logger-name cannot be ${loggerNameParam}`);
+    }
+
+    const logger = winston.loggers.get(loggerNameParam);
+    return res.status(200).send(logger.level);
   })
   .put((req: Request<{}, {}, {}, GetLoggerLevelParams>, res: Response) => {
     const loggerNameParam = req.query['logger-name'];
@@ -53,7 +45,8 @@ logsRouter
       return res.status(400).send(`logger-level cannot be ${loggerLevelParam}`);
     }
 
-    loggerTypeToLogger[loggerNameParam].level = loggerLevelParam.toLowerCase();
+    const logger = winston.loggers.get(loggerNameParam);
+    logger.level = loggerLevelParam.toLowerCase();
 
     return res.status(200).send(loggerLevelParam);
   });
