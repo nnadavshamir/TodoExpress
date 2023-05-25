@@ -10,6 +10,6 @@ app.use(requestsLoggerMiddleware);
 app.use('/todo', todoRouter);
 app.use('/logs', logsRouter);
 
-app.listen(9583, () => {
-  console.log(`Server is running on port 9583`);
+app.listen(9285, () => {
+  console.log(`Server is running on port 9285`);
 });
